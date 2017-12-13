@@ -1,0 +1,13 @@
+author = load '/home/hduser/Downloads/author-data'  using  PigStorage(',')  AS (aid:int, name:chararray);
+--dump author;
+book = load '/home/hduser/Downloads/book-data'  using  PigStorage(',')  AS (bid:int , price:int, aid:int);
+--dump author;
+autname = filter author by INDEXOF(name,'J',0) == 0;
+--dump autname;
+boo = filter book by price>=200;
+--dump boo;
+joo = join autname by $0, boo by $2;
+--dump joo;
+fi = foreach joo generate $0, $1, $2, $3;
+dump fi;
+store fi into '/home/hduser/Downloads/data';

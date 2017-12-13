@@ -1,0 +1,16 @@
+author = load '/home/hduser/Downloads/weblog'  using  PigStorage('\t') AS (name:chararray, bank:chararray,time);
+--dump author;
+gate = load '/home/hduser/Downloads/gateway'  using  PigStorage('\t') AS (bank1:chararray, succ:double);
+--dump gate;
+web = foreach author generate $0, $1;
+--dump web;
+joo = join web by $1, gate by $0;
+--dump joo; 
+koi = foreach joo generate $0, $1, $3 as av;
+--dump koi;
+grp = group koi by $0;
+--dump grp;
+au = foreach grp generate $0, $1, AVG(koi.av) as aver;
+--dump au;
+grp_fil = filter au by aver>90;
+dump grp_fil;
